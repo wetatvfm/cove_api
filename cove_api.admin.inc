@@ -12,23 +12,21 @@ function cove_api_admin_site_settings() {
   $form = array();
 
   $form['cove_api_settings'] = array(
-    '#title' => 'PBS COVE API Settings',
+    '#title' => t('PBS COVE API Settings'),
     '#type' => 'fieldset',
   );
 
   $form['cove_api_settings']['cove_api_key'] = array(
-    '#title' => 'PBS COVE API Key',
+    '#title' => t('PBS COVE API Key'),
     '#type' => 'textfield',
     '#required' => TRUE,
-    '#description' => 'COVE API Key',
     '#default_value' => variable_get('cove_api_key'),
   );
 
   $form['cove_api_settings']['cove_api_secret'] = array(
-    '#title' => 'PBS COVE API Secret',
+    '#title' => t('PBS COVE API Secret'),
     '#type' => 'textfield',
     '#required' => TRUE,
-    '#description' => 'COVE API Secret',
     '#default_value' => variable_get('cove_api_secret'),
   );
 
