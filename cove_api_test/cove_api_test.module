@@ -1,0 +1,375 @@
+<?php
+
+/**
+ * @file cove_api_test.module
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function cove_api_test_permission() {
+  $permissions = array();
+
+  $permissions['cove_api_test'] = array(
+    'title' => t('Run COVE API tests'),
+    'description' => t('Allow user to run random queries against COVE'),
+  );
+  return $permissions;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function cove_api_test_menu() {
+  $items = array();
+
+  $items['admin/config/media/cove_api/cove_api_test'] = array(
+    'title' => 'Administer Cove Api Test',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cove_api_test_tests_form'),
+    'access arguments' => array('cove_api_test'),
+  );
+  return $items;
+}
+
+/**
+ * Form builder.
+ */
+function cove_api_test_tests_form($form, &$form_state) {
+  $form['method'] = array(
+    '#type' => 'select',
+    '#title' => t('Method'),
+    '#options' => array(
+      'programs' => t('Programs'),
+      'videos' => t('Videos'),
+      'categories' => t('Categories'),
+      'graveyard' => t('Graveyard'),
+    ),
+    '#description' => t('Select the main method to call'),
+  );
+  $form['method_id'] = array(
+    '#type' => 'textfield',
+    '#title' => t('ID (optional)'),
+    '#default_value' => '',
+    '#size' => 5,
+    '#maxlength' => 4,
+    '#required' => FALSE,
+    '#description' => t('You can provide an ID to use with the method above.'),
+  );
+
+  $form['offset'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Offset'),
+    '#size' => 5,
+    '#maxlength' => 4,
+    '#required' => FALSE,
+  );
+
+  // Show only the parameters that make sense with the method
+  $form['parameters'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Filters'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+  $form['parameters']['filter_nola_root'] = array(
+    '#type' => 'textfield',
+    '#title' => t('NOLA Root'),
+    '#description' => t('Provide NOLA root for filtering'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
+    ),
+  );
+  $form['parameters']['filter_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#description' => t('Show title'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array(
+            array('value' => 'programs'),
+            array('value' => 'videos'),
+          ),
+      ),
+    ),
+  );
+  $form['parameters']['filter_producer__name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Producer Name'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
+    ),
+  );
+  $form['parameters']['filter_guid'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Merlin GUID'),
+    '#description' => t('Provide Merlin GUID for filtering'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['filter_program'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Program ID'),
+    '#description' => t('Provide Program ID for filtering'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['filter_program__title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Program Title'),
+    '#description' => t('Provide Program Title for filtering'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['filter_availability_status'] = array(
+    '#type' => 'select',
+    '#options' => array(
+      '' => t('-None-'),
+      'Not Available' => t('Not Available'),
+      'Available' => t('Available'),
+      'Expired' => t('Expired'),
+    ),
+    '#title' => t('Avialability'),
+    '#description' => t('Filter by avialablity'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['filter_record_last_updated_datetime__gt'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Last Modified Date'),
+    '#description' => t('YYYY-MM-DD'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['filter_type'] = array(
+    '#type' => 'select',
+    '#options' => array(
+      '' => t('-None-'),
+      'Episode' => t('Episode'),
+      'Clip' => t('Clip'),
+      'Promotion' => t('Promotion'),
+      'Interstitial' => t('Interstitial'),
+      'Other' => t('Other'),
+    ),
+    '#title' => t('Video Type'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['exclude_type'] = array(
+    '#type' => 'select',
+    '#options' => array(
+      '' => t('-None-'),
+      'Episode' => t('Episode'),
+      'Clip' => t('Clip'),
+      'Promotion' => t('Promotion'),
+      'Interstitial' => t('Interstitial'),
+      'Other' => t('Other'),
+    ),
+    '#title' => t('Exclude Video Type'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['filter_tp_media_object_id'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Platform Media Object id'),
+    '#description' => t('Use the Platform Media Object id to find a video'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['filter_mediafile_set__video_encoding__mime_type'] = array(
+    '#title' => t('Encoding'),
+    '#description' => t('Return only videos that have matching encoding value'),
+    '#type' => 'select',
+    '#options' => array(
+      '' => t('-None-'),
+      'video/FLV' => t('FLV (Kids Videos'),
+      'video/mp4' => t('MP4'),
+      'application/x-mpegURL' => t('MPEG URL'),
+    ),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['content_region'] = array(
+    '#title' => t('Content Region'),
+    '#description' => t('Return either national or local content. <em>This filter is useful for Passport content</em>'),
+    '#type' => 'select',
+    '#options' => array(
+      '' => t('-None-'),
+      'national' => t('National'),
+      'local' => t('Local'),
+    ),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['audience'] = array(
+    '#title' => t('Audience'),
+    '#description' => t('Return videos available to public, all members and station members.'),
+    '#type' => 'select',
+    '#options' => array(
+      '' => t('-None-'),
+      'public' => t('Public'),
+      'station_members' => t('Station Members'),
+      'all_members' => t('All Members'),
+    ),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+    ),
+  );
+  $form['parameters']['fields']['associated_images'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('include images'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array(
+            array('value' => 'programs'),
+            array('value' => 'videos'),
+          ),
+      ),
+    ),
+  );
+  $form['parameters']['fields']['tags'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('include tags'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
+    ),
+  );
+  $form['parameters']['fields']['categories'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('include categories'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
+    ),
+  );
+  $form['parameters']['fields']['geo_profile'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('include geo_profile'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
+    ),
+  );
+  $form['parameters']['fields']['producer'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('include producer'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
+    ),
+  );
+
+  // use an AJAX callback to display results without refreshing the page
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#ajax' => array(
+      'callback' => 'cove_api_test_settings_form_submit_ajax_callback',
+      'wrapper' => 'box',
+      'name' => 'submit1',
+    ),
+    '#value' => t('Get response'),
+  );
+
+  // results will be displayed here
+  $form['box'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="box">',
+    '#suffix' => '</div>',
+    '#markup' => '',
+  );
+
+  return $form;
+}
+
+/**
+ * Form submit handler.
+ */
+function cove_api_test_settings_form_submit_ajax_callback($form, &$form_state) {
+
+  dpm($form);
+
+  $method = $form['method']['#value'];
+
+  if($form['method_id']['#value']){
+    $method .= '/'.$form['method_id']['#value'];
+  }
+
+  $args = array();
+  $fields = array();
+
+  // Filters
+  foreach ($form['parameters'] as $label => $element){
+    if ( $label[0] != '#' && $label !='fields'){
+      if($element['#value']){
+        $args[$label] = $element['#value'];
+      }
+    }
+  }
+
+  // Extra fields
+  foreach($form['parameters']['fields'] as $label => $element) {
+    if ( $label[0] != '#'){
+      if ($element['#value']){
+        $fields[] = $label;
+      }
+    }
+  }
+
+  if(count($fields)) {
+    $args['fields'] = implode(',', $fields);
+  }
+
+  // Offset
+  if($form['offset']['#value']) {
+    $args['limit_start']=$form['offset']['#value'];
+  }
+
+  $response = cove_api_request($method, $args, $cache_expire = 0);
+  dpm($response);
+
+  $element = $form['box'];
+  $element['#markup'] = '<pre>' . print_r($response,TRUE) .'</pre>';
+  return $element;
+}
+
