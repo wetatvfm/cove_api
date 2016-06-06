@@ -23,11 +23,18 @@ function cove_api_test_permission() {
 function cove_api_test_menu() {
   $items = array();
 
+  $items['admin/config/media/cove_api/default'] = array(
+    'title' => 'Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+
   $items['admin/config/media/cove_api/cove_api_test'] = array(
-    'title' => 'Administer Cove Api Test',
+    'title' => 'Test COVE API Response',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cove_api_test_tests_form'),
     'access arguments' => array('cove_api_test'),
+    'type' => MENU_LOCAL_TASK,
   );
   return $items;
 }
