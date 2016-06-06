@@ -1,5 +1,5 @@
-name = PBS COVE API Test Interface
-description = Allows admins to run queries against the COVE API to see what comes back.
+name = PBS Cove API Test Interface
+description = Allows admins to run queries against the Cove API to see what comes back.
 core = 7.x
 dependencies[] = cove_api
 dependencies[] = devel
