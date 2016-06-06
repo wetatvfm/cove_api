@@ -115,6 +115,8 @@ function cove_api_request($method, $args = array(), $cache_expire = 600, $api_ke
 
   $response = drupal_http_request($uri, $options);
 
+  //dpm($response);
+
   if ($response->code === '200') {
     $response_data = json_decode($response->data);
     if (!empty($cache_expire) && !empty($cache_key)) {
@@ -123,10 +125,24 @@ function cove_api_request($method, $args = array(), $cache_expire = 600, $api_ke
     return $response_data;
   }
   elseif ($response->code === '500') {
-    watchdog('cove_api', '500 error from PBS COVE API. Request was %request. Error was %error.', array('%error' => $response->error, '%request' => $response->request), WATCHDOG_ERROR);
+    watchdog(
+      'cove_api',
+      '500 error from PBS COVE API. Request was %request. Error was %error.',
+      array(
+        '%error' => $response->error,
+        '%request' => $response->request
+      ), WATCHDOG_ERROR);
+    return;
+  }  else {
+    watchdog(
+      'cove_api',
+      'Error from PBS COVE API: %error.', array(
+        '%error' => $response->error,
+      ), WATCHDOG_ERROR);
     return;
   }
-}
+
+  }
 
 /**
  * Generate a signature for a COVE API Request.
