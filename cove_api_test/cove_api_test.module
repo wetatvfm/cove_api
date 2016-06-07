@@ -397,8 +397,6 @@ function cove_api_test_tests_form($form, &$form_state) {
  */
 function cove_api_test_settings_form_submit_ajax_callback($form, &$form_state) {
 
-  dpm($form);
-
   $method = $form['method']['#value'];
 
   if($form['method_id']['#value']){
@@ -436,7 +434,10 @@ function cove_api_test_settings_form_submit_ajax_callback($form, &$form_state) {
   }
 
   $response = cove_api_request($method, $args, $cache_expire = 0);
-  dpm($response);
+
+  if (function_exists('dpm')) {
+    dpm($response);
+  }
 
   $element = $form['box'];
   $element['#markup'] = '<pre>' . print_r($response,TRUE) .'</pre>';
