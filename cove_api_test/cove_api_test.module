@@ -87,6 +87,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'programs'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
     ),
   );
   $form['parameters']['filter_title'] = array(
@@ -95,6 +98,12 @@ function cove_api_test_tests_form($form, &$form_state) {
     '#description' => t('Show title'),
     '#states' => array(
       'visible' => array(
+        ':input[name="method"]' => array(
+            array('value' => 'programs'),
+            array('value' => 'videos'),
+          ),
+      ),
+      'enabled' => array(
         ':input[name="method"]' => array(
             array('value' => 'programs'),
             array('value' => 'videos'),
@@ -109,6 +118,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'programs'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
     ),
   );
   $form['parameters']['filter_guid'] = array(
@@ -117,6 +129,9 @@ function cove_api_test_tests_form($form, &$form_state) {
     '#description' => t('Provide Merlin GUID for filtering'),
     '#states' => array(
       'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+      'enabled' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
     ),
@@ -129,6 +144,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
     ),
   );
   $form['parameters']['filter_program__title'] = array(
@@ -137,6 +155,9 @@ function cove_api_test_tests_form($form, &$form_state) {
     '#description' => t('Provide Program Title for filtering'),
     '#states' => array(
       'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+      'enabled' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
     ),
@@ -155,6 +176,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
     ),
   );
   $form['parameters']['filter_record_last_updated_datetime__gt'] = array(
@@ -163,6 +187,9 @@ function cove_api_test_tests_form($form, &$form_state) {
     '#description' => t('YYYY-MM-DD'),
     '#states' => array(
       'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+      'enabled' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
     ),
@@ -182,6 +209,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
     ),
   );
   $form['parameters']['exclude_type'] = array(
@@ -199,6 +229,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
     ),
   );
   $form['parameters']['filter_tp_media_object_id'] = array(
@@ -207,6 +240,9 @@ function cove_api_test_tests_form($form, &$form_state) {
     '#description' => t('Use the Platform Media Object id to find a video'),
     '#states' => array(
       'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+      'enabled' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
     ),
@@ -225,6 +261,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
     ),
   );
   $form['parameters']['content_region'] = array(
@@ -238,6 +277,9 @@ function cove_api_test_tests_form($form, &$form_state) {
     ),
     '#states' => array(
       'visible' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
+      'enabled' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
     ),
@@ -256,6 +298,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'videos'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'videos'),
+      ),
     ),
   );
   $form['parameters']['fields']['associated_images'] = array(
@@ -263,6 +308,12 @@ function cove_api_test_tests_form($form, &$form_state) {
     '#title' => t('include images'),
     '#states' => array(
       'visible' => array(
+        ':input[name="method"]' => array(
+            array('value' => 'programs'),
+            array('value' => 'videos'),
+          ),
+      ),
+      'enabled' => array(
         ':input[name="method"]' => array(
             array('value' => 'programs'),
             array('value' => 'videos'),
@@ -277,6 +328,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'programs'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
     ),
   );
   $form['parameters']['fields']['categories'] = array(
@@ -284,6 +338,9 @@ function cove_api_test_tests_form($form, &$form_state) {
     '#title' => t('include categories'),
     '#states' => array(
       'visible' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
+      'enabled' => array(
         ':input[name="method"]' => array('value' => 'programs'),
       ),
     ),
@@ -295,6 +352,9 @@ function cove_api_test_tests_form($form, &$form_state) {
       'visible' => array(
         ':input[name="method"]' => array('value' => 'programs'),
       ),
+      'enabled' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
     ),
   );
   $form['parameters']['fields']['producer'] = array(
@@ -302,6 +362,9 @@ function cove_api_test_tests_form($form, &$form_state) {
     '#title' => t('include producer'),
     '#states' => array(
       'visible' => array(
+        ':input[name="method"]' => array('value' => 'programs'),
+      ),
+      'enabled' => array(
         ':input[name="method"]' => array('value' => 'programs'),
       ),
     ),
