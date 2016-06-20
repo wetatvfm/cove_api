@@ -1,6 +1,6 @@
 <?php
 /**
- * Validate inidividual arguments to be sent to a COVE API Request.
+ * Validate individual arguments to be sent to a COVE API Request.
  *
  * @param string $key
  *   The filter or option.
@@ -129,14 +129,15 @@ function _cove_api_simple_date_check($value) {
   if ($dt !== false && !array_sum($dt->getLastErrors())) {
     return TRUE;
   }
-  else {
-   watchdog(
-    'cove_api',
-    'Validation error. %key expects a date formatted as YYYY-MM-DD.',
-    array(
-      '%key' => $key
-    ), WATCHDOG_ERROR);
-  }
+
+ watchdog(
+  'cove_api',
+  'Validation error. %key expects a date formatted as YYYY-MM-DD.',
+  array(
+    '%key' => $value
+  ), WATCHDOG_ERROR);
+
+  return FALSE;
 }
 
 /**
@@ -157,12 +158,13 @@ function _cove_api_full_date_check($value) {
   if ($dt !== false && !array_sum($dt->getLastErrors())) {
     return TRUE;
   }
-  else {
-   watchdog(
-    'cove_api',
-    'Validation error. %key expects a date formatted as YYYY-MM-DDTHH:MM:SS.',
-    array(
-      '%key' => $key
-    ), WATCHDOG_ERROR);
-  }
+
+ watchdog(
+  'cove_api',
+  'Validation error. %key expects a date formatted as YYYY-MM-DDTHH:MM:SS.',
+  array(
+    '%key' => $value
+  ), WATCHDOG_ERROR);
+  return FALSE;
 }
+

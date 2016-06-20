@@ -40,7 +40,13 @@ function cove_api_test_menu() {
 }
 
 /**
- * Form builder.
+ * Build the testing form.
+ * @param $form
+ *   Form array.
+ * @param $form_state
+ *   Form state array.
+ *
+ * @return mixed
  */
 function cove_api_test_tests_form($form, &$form_state) {
   $form['method'] = array(
@@ -170,8 +176,8 @@ function cove_api_test_tests_form($form, &$form_state) {
       'Available' => t('Available'),
       'Expired' => t('Expired'),
     ),
-    '#title' => t('Avialability'),
-    '#description' => t('Filter by avialablity'),
+    '#title' => t('Availability'),
+    '#description' => t('Filter by availability'),
     '#states' => array(
       'visible' => array(
         ':input[name="method"]' => array('value' => 'videos'),
@@ -393,7 +399,14 @@ function cove_api_test_tests_form($form, &$form_state) {
 }
 
 /**
- * Form submit handler.
+ * Test form submit handler for AJAX Callback.
+ *
+ * @param $form
+ *   Form array.
+ * @param $form_state
+ *   Submitted form state.
+ *
+ * @return mixed
  */
 function cove_api_test_settings_form_submit_ajax_callback($form, &$form_state) {
 
