@@ -97,12 +97,35 @@ function cove_api_request($method, $args = array(), $cache_expire = 600, $api_ke
   }
 
   // Otherwise, make a new request and cache it.
+  if (!empty($args)) {
+    $args = cove_api_validate_args($args, $method);
+    if(!$args){
+      watchdog(
+        'cove_api',
+        'Arguments did not pass validation. %method request not sent',
+        array(
+          '%method' => $method
+        ),
+        WATCHDOG_ERROR
+      );
+      return FALSE;
+    }
+  } else {
+    watchdog(
+      'cove_api',
+      'No arguments provided. %method request not sent',
+      array(
+        '%method' => $method
+      ),
+      WATCHDOG_ERROR
+    );
+    return FALSE;
+  }
+
   $timestamp = time();
   $nonce = md5(drupal_random_bytes(6));
-  $uri = 'http://api.pbs.org/cove/v1/' . $method . '/';
-  if (!empty($args)) {
-    $uri .= '?' . http_build_query($args);
-  }
+
+  $uri = 'http://api.pbs.org/cove/v1/' . $method . '/?' . http_build_query($args);
 
   $signature = cove_api_signature($uri, $timestamp, $api_key, $api_secret, $nonce);
 
@@ -114,8 +137,6 @@ function cove_api_request($method, $args = array(), $cache_expire = 600, $api_ke
   );
 
   $response = drupal_http_request($uri, $options);
-
-  //dpm($response);
 
   if ($response->code === '200') {
     $response_data = json_decode($response->data);
@@ -133,7 +154,8 @@ function cove_api_request($method, $args = array(), $cache_expire = 600, $api_ke
         '%request' => $response->request
       ), WATCHDOG_ERROR);
     return;
-  }  else {
+  }
+  else {
     watchdog(
       'cove_api',
       'Error from PBS COVE API: %error.', array(
@@ -141,8 +163,7 @@ function cove_api_request($method, $args = array(), $cache_expire = 600, $api_ke
       ), WATCHDOG_ERROR);
     return;
   }
-
-  }
+}
 
 /**
  * Generate a signature for a COVE API Request.
@@ -166,4 +187,41 @@ function cove_api_signature($uri, $timestamp, $api_key, $api_secret, $nonce) {
   $signature = hash_hmac('sha1', $string_to_sign, $api_secret);
 
   return $signature;
+}
+
+/**
+ * Validate arguments to be sent to a COVE API Request, and remove any blank
+ * arguments, which COVE change handle.
+ *
+ * @param array $args
+ *   The original arguments submitted to the request.
+ *
+ * @param string $method
+ *   The method being called.
+ *
+ * @return array|boolean
+ *   The validated arguments or FALSE if validation fails.
+ */
+function cove_api_validate_args($args, $method) {
+  $clean_args = array();
+
+  if (empty($args)) {
+    return FALSE;
+  }
+
+  module_load_include('inc', 'cove_api', 'cove_api_validation');
+
+  // check that each argument has a valid value
+  foreach ($args as $key => $arg) {
+    if (!empty($arg)) {
+      if (_cove_api_allowed_values($key, $arg, $method)) {
+        $clean_args[$key] = $arg;
+      } else {
+        return FALSE;
+      }
+    }
+  }
+
+  return $clean_args;
+
 }
