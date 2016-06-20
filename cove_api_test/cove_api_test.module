@@ -435,12 +435,20 @@ function cove_api_test_settings_form_submit_ajax_callback($form, &$form_state) {
 
   $response = cove_api_request($method, $args, $cache_expire = 0);
 
-  if (function_exists('dpm')) {
-    dpm($response);
+  if(!$response) {
+    $response = t('Request failed most likely due to invalid request. Check recent log entries for more detail');
   }
 
-  $element = $form['box'];
-  $element['#markup'] = '<pre>' . print_r($response,TRUE) .'</pre>';
+  if (function_exists('dpm')) {
+    dpm($response);
+    $element = $form['box'];
+    $element['#markup'] = '<p>' . t('Request details above') .'</p>';
+  } else {
+    $element = $form['box'];
+    $element['#markup'] = '<pre>' . print_r($response,TRUE) .'</pre>';
+  }
+
   return $element;
+
 }
 

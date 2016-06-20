@@ -34,6 +34,7 @@ function _cove_api_allowed_values($key, $value, $method) {
       'filter_mediafile_set__video_encoding__mime_type' => 'string',
       'content_region' => 'string',
       'audience' => 'string',
+      'filter_availability_status' => 'string',
 
       // advanced filters
       'filter_expire_datetime__gt' => '_cove_api_simple_date_check',
@@ -95,7 +96,7 @@ function _cove_api_allowed_values($key, $value, $method) {
 
   switch ($patterns[$method][$key]) {
     case 'int':
-      return is_int($value);
+      return is_numeric($value);
       break;
     case 'string':
       return is_string($value);
