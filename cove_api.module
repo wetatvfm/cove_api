@@ -30,9 +30,51 @@ function cove_api_menu() {
     'access arguments' => array('administer cove_api'),
     'file' => 'cove_api.admin.inc',
   );
+  $items['admin/config/media/cove_api/foo'] = array(
+    'title' => 'PBS COVE API foo',
+    'description' => 'Testing responses',
+    'access arguments' => array('administer cove_api'),
+    'page callback' => 'cove_api_foo',
+    'type' => MENU_CALLBACK,
+  );
 
   return $items;
 }
+
+
+function cove_api_foo() {
+  $franchises_args = array(
+    //'slug' => 'nova',
+    );
+
+  $shows_args = array(
+    //'slug' => 'weta-neighborhoods',
+    //'genre-slug' => 'arts_and_music',
+    //'page' => 7,
+    //'audience_scope' => 'local',
+    //'audience' => 'WETA',
+    'franchise-slug' => 'masterpiece',
+    );
+
+  $seasons_args = array(
+    'id' =>  '8db0ac1a-13b9-4d25-8bb8-47192e03e427', // season 43 of Great Performances
+  );
+
+
+  //$foobar = cove_api_request('stations', $args);
+  $franchises = cove_api_request('franchises', $franchises_args);
+  $shows = cove_api_request('shows', $shows_args);
+  $seasons = cove_api_request('seasons/c0af9870-f6f2-496e-af3e-9a2794c40eb1'); // season 2 of poldark
+  $assets = cove_api_request('assets/masterpiece-zen-cabal-preview');
+  //$foobar = cove_api_request('assets/a7224a1c-7079-4d5c-b60f-07c3215a639c');
+  dpm($franchises, 'franchises');
+  dpm($shows, 'shows');
+  dpm($seasons, 'seasons');
+  dpm($assets, 'assets');
+  return array('#markup' => 'foo');
+}
+
+
 
 /**
  * Gets configuration settings.
@@ -95,7 +137,7 @@ function cove_api_request($method, $args = array(), $cache_expire = 600, $api_ke
   if (!empty($cache->data) && time() < $cache->expire) {
     return $cache->data;
   }
-
+/*
   // Otherwise, make a new request and cache it.
   if (!empty($args)) {
     $args = cove_api_validate_args($args, $method);
@@ -121,21 +163,23 @@ function cove_api_request($method, $args = array(), $cache_expire = 600, $api_ke
     );
     return FALSE;
   }
-
+*/
   $timestamp = time();
   $nonce = md5(drupal_random_bytes(6));
 
-  $uri = 'http://api.pbs.org/cove/v1/' . $method . '/?' . http_build_query($args);
+  //$uri = 'http://api.pbs.org/cove/v1/' . $method . '/?' . http_build_query($args);
+  $uri = 'https://media-qa.services.pbs.org/api/v1/' . $method . '/?' . http_build_query($args);
 
   $signature = cove_api_signature($uri, $timestamp, $api_key, $api_secret, $nonce);
 
   $options['headers'] = array(
-    'X-PBSAuth-Timestamp' => $timestamp,
-    'X-PBSAuth-Consumer-Key' => $api_key,
-    'X-PBSAuth-Signature' => $signature,
-    'X-PBSAuth-Nonce' => $nonce,
+    //'X-PBSAuth-Timestamp' => $timestamp,
+    //'X-PBSAuth-Consumer-Key' => $api_key,
+    //'X-PBSAuth-Signature' => $signature,
+    //'X-PBSAuth-Nonce' => $nonce,
+    'Content-Type' => 'application/json',
   );
-
+dpm($uri, 'uri');
   $response = drupal_http_request($uri, $options);
 
   if ($response->code === '200') {
