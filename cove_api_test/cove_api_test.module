@@ -210,7 +210,7 @@ function cove_api_test_tests_form($form, &$form_state) {
   $form['parameters']['page'] = array(
     '#type' => 'textfield',
     '#title' => t('Page'),
-    '#description' => t('Show the resources on a specific page.'),
+    '#description' => t('Show the resources on a specific page. Resources are returned 25 items per page, and pagination starts with 1.'),
     '#states' => array(
       'visible' => array(
         ':input[name="method"]' => array(
@@ -290,7 +290,10 @@ function cove_api_test_settings_form_submit_ajax_callback($form, &$form_state) {
   $method = $form['method']['#value'];
 
   if($form['id_or_slug']['#value']){
-    $method .= '/'.$form['id_or_slug']['#value'];
+    $method = array(
+      $form['method']['#value'],
+      $form['id_or_slug']['#value'],
+    );
   }
 
   $args = array();

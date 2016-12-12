@@ -96,15 +96,15 @@ function cove_api_get_config() {
 }
 
 /**
- * Make a request to the PBS Schedule API.
+ * Make a request to the PBS Core Data Model API.
  *
  * @param string/array $method
  *   The API method for the request, can be a string or array.
  *   arrays will be exploded to allow for things like
- *   '/programs/408/?args=val'.
+ *   '/shows/downton-abbey'.
  * @param array $args
  *   Associative array of arguments to add to the url. For example:
- *   array('filter_title' => 'nova').
+ *   array('frachise-slug' => 'masterpiece').
  * @param int $cache_expire
  *   The number of seconds from now to expire the cache for this request, or 0
  *   to not cache request.
@@ -137,38 +137,33 @@ function cove_api_request($method, $args = array(), $cache_expire = 600, $api_ke
   if (!empty($cache->data) && time() < $cache->expire) {
     return $cache->data;
   }
-/*
+
   // Otherwise, make a new request and cache it.
   if (!empty($args)) {
+    $orig_args = $args;
     $args = cove_api_validate_args($args, $method);
     if(!$args){
+      $export = print_r($orig_args, TRUE);
       watchdog(
         'cove_api',
-        'Arguments did not pass validation. %method request not sent',
+        'Arguments did not pass validation. %method request not sent. Args: %export',
         array(
-          '%method' => $method
+          '%method' => $method,
+          '%export' => $export,
         ),
         WATCHDOG_ERROR
       );
       return FALSE;
     }
-  } else {
-    watchdog(
-      'cove_api',
-      'No arguments provided. %method request not sent',
-      array(
-        '%method' => $method
-      ),
-      WATCHDOG_ERROR
-    );
-    return FALSE;
   }
-*/
+
   $timestamp = time();
   $nonce = md5(drupal_random_bytes(6));
 
-  //$uri = 'http://api.pbs.org/cove/v1/' . $method . '/?' . http_build_query($args);
-  $uri = 'https://media-qa.services.pbs.org/api/v1/' . $method . '/?' . http_build_query($args);
+  $uri = 'https://media-qa.services.pbs.org/api/v1/' . $method . '/';
+  if (!empty($args)) {
+    $uri .= '?' . http_build_query($args);
+  }
 
   $signature = cove_api_signature($uri, $timestamp, $api_key, $api_secret, $nonce);
 
