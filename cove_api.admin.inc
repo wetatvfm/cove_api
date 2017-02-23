@@ -40,7 +40,7 @@ function cove_api_admin_site_settings_validate($form, &$form_state) {
   $values = $form_state['values'];
   $api_key = $values['cove_api_key'];
   $api_secret = $values['cove_api_secret'];
-  $response = cove_api_request('stations', array('call_sign' => 'WETA'), 0, $api_key, $api_secret);
+  $response = cove_api_request('franchises', array('slug' => 'masterpiece'), 0, $api_key, $api_secret);
 
   if (!$response) {
     form_set_error('cove_api_settings', t('Failed to connect to COVE API with those credentials.'));
@@ -49,3 +49,4 @@ function cove_api_admin_site_settings_validate($form, &$form_state) {
     drupal_set_message(t('Successfully connected with COVE API. Settings have been saved.'));
   }
 }
+
